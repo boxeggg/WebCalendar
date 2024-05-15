@@ -14,5 +14,7 @@ namespace Kalendarzyk.Data
         {
             base.OnModelCreating(builder);
         }
+        public DbSet<EventModel> Events { get; set; }
+        public DbSet<LocationModel> Locations { get; set; } 
     }
 }
