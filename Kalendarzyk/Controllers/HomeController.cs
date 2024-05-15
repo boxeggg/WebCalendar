@@ -1,16 +1,22 @@
+using Kalendarzyk.Data.Repository;
 using Kalendarzyk.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
+
 namespace Kalendarzyk.Controllers
 {
+    
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ICalendarRepository _repo;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ICalendarRepository repo)
         {
+            _repo = repo;
             _logger = logger;
+
         }
 
         public IActionResult Index()

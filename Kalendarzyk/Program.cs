@@ -1,4 +1,5 @@
 using Kalendarzyk.Data;
+using Kalendarzyk.Data.Repository;
 using Kalendarzyk.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<UserModel>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddScoped<ICalendarRepository,CalendarRepository>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
