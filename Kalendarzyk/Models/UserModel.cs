@@ -4,6 +4,6 @@ namespace Kalendarzyk.Models
 {
     public class UserModel : IdentityUser
     {
-        public virtual ICollection<EventModel> Events { get; set; }
+        public  ICollection<EventModel> Events { get; set; }
     }
 }

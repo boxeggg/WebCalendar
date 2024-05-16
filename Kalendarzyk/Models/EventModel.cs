@@ -10,8 +10,8 @@ namespace Kalendarzyk.Models
         public string Description { get; set; }
         public DateTime StartTime { get; set;}
         public DateTime EndTime { get; set; }
-        public virtual LocationModel Location { get; set; }
-        public virtual UserModel User { get; set; }
+        public LocationModel Location { get; set; }
+        public UserModel User { get; set; }
 
         public EventModel(IFormCollection form, LocationModel location) {
 

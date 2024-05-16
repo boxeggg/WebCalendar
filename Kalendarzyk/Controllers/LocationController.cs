@@ -32,36 +32,8 @@ namespace Kalendarzyk.Controllers
             return View(_repo.GetLocations());
         }
 
-
-
-
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] LocationModel locationModel)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _repo.CreateLocation(locationModel);
-                    TempData["Alert"] = "Udało ci się dodać lokacje";
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    ViewData["Alert"] = "Wystąpił bład: " + ex.Message;
-                    return View(locationModel);
-                }
-            }
-            return View(locationModel);
-        }
-        public IActionResult Delete(int? id)
+        // GET: Location/Details/5
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
@@ -76,14 +48,56 @@ namespace Kalendarzyk.Controllers
 
             return View(locationModel);
         }
+
+        // GET: Location/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Location/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,Name")] LocationModel locationModel)
+        {
+                try
+                {
+                    _repo.CreateLocation(locationModel);
+                    TempData["Alert"] = "Udało ci się dodać lokacje";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ViewData["Alert"] = "Wystąpił bład: " + ex.Message;
+                    return View(locationModel);
+                }
+            }
+        public IActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var eventModel = _repo.GetLocation((int)id);
+            if (eventModel == null)
+            {
+                return NotFound();
+            }
+
+            return View(eventModel);
+        }
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
             _repo.DeleteLocation(id);
-            TempData["Alert"] = "Deleted location";
+            TempData["Alert"] = "Usunąles wydarzenie:";
             return RedirectToAction(nameof(Index));
         }
+
     }
 }
-
