@@ -32,32 +32,15 @@ namespace Kalendarzyk.Controllers
             return View(_repo.GetLocations());
         }
 
-        // GET: Location/Details/5
-        public IActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var locationModel = _repo.GetLocation((int)id);
-            if (locationModel == null)
-            {
-                return NotFound();
-            }
 
-            return View(locationModel);
-        }
 
-        // GET: Location/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Location/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] LocationModel locationModel)
@@ -77,6 +60,29 @@ namespace Kalendarzyk.Controllers
                 }
             }
             return View(locationModel);
+        }
+        public IActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var locationModel = _repo.GetLocation((int)id);
+            if (locationModel == null)
+            {
+                return NotFound();
+            }
+
+            return View(locationModel);
+        }
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            _repo.DeleteLocation(id);
+            TempData["Alert"] = "Deleted location";
+            return RedirectToAction(nameof(Index));
         }
     }
 }

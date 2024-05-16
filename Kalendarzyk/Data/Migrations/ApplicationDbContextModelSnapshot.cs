@@ -56,7 +56,7 @@ namespace Kalendarzyk.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
                 });
 
             modelBuilder.Entity("Kalendarzyk.Models.LocationModel", b =>
@@ -73,7 +73,7 @@ namespace Kalendarzyk.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations");
+                    b.ToTable("Locations", (string)null);
                 });
 
             modelBuilder.Entity("Kalendarzyk.Models.UserModel", b =>

@@ -1,7 +1,12 @@
+using Kalendarzyk.Data;
 using Kalendarzyk.Data.Repository;
 using Kalendarzyk.Models;
+using Kalendarzyk.Models.ViewModels;
+using Kalendarzyk.Serializer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+
 
 
 namespace Kalendarzyk.Controllers
@@ -11,16 +16,21 @@ namespace Kalendarzyk.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ICalendarRepository _repo;
-
-        public HomeController(ILogger<HomeController> logger, ICalendarRepository repo)
+        private readonly ApplicationDbContext _context;
+        public HomeController(ILogger<HomeController> logger, ICalendarRepository repo,ApplicationDbContext context)
         {
             _repo = repo;
             _logger = logger;
+            _context = context;
 
         }
 
         public IActionResult Index()
         {
+            var user = _context.UserModel.FirstOrDefault(n => n.UserName == User.Identity.Name);
+            ViewData["res"] = JSONhelper.GetResourceJson(_repo.GetLocations());
+            ViewData["eve"] = JSONhelper.GetEventsJson(_repo.GetEvents());
+
             return View();
         }
 

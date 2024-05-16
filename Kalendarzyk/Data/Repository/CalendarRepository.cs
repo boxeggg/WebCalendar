@@ -10,6 +10,7 @@ namespace Kalendarzyk.Data.Repository
         public void CreateEvent(IFormCollection form);
         public void UpdateEvent(IFormCollection form);  
         public void DeleteEvent(int id);
+        public void DeleteLocation(int id);
         public List<LocationModel> GetLocations();
         public LocationModel GetLocation(int id);
         public void CreateLocation(LocationModel location);
@@ -53,6 +54,12 @@ namespace Kalendarzyk.Data.Repository
         {
             var myevent = db.Events.Find(id);
             db.Events.Remove(myevent);
+            db.SaveChanges();
+        }
+        public void DeleteLocation(int id)
+        {
+            var mylocation = db.Locations.Find(id);
+            db.Locations.Remove(mylocation);
             db.SaveChanges();
         }
         public List<LocationModel> GetLocations()

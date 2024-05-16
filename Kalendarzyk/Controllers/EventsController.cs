@@ -31,7 +31,7 @@ namespace Kalendarzyk.Controllers
             return View(_repo.GetEvents());
         }
 
-        // GET: Events/Details/5
+
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -47,16 +47,14 @@ namespace Kalendarzyk.Controllers
             return View(@event);
         }
 
-        // GET: Events/Create
+
         public IActionResult Create()
         {
 
             return View(new EventViewModel(_repo.GetLocations()));
         }
 
-        // POST: Events/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(EventViewModel vm, IFormCollection form)
@@ -76,7 +74,7 @@ namespace Kalendarzyk.Controllers
             }
         }
 
-        // GET: Events/Edit/5
+
         public IActionResult Edit(int? id)
         {
             if (id == null)

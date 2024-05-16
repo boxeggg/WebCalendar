@@ -32,7 +32,8 @@ namespace Kalendarzyk.Data
             }
         }
         public DbSet<EventModel> Events { get; set; }
-        public DbSet<LocationModel> Locations { get; set; } 
-        
+        public DbSet<LocationModel> Locations { get; set; }
+        public DbSet<UserModel> UserModel { get; set; }
+
     }
 }
