@@ -33,15 +33,18 @@ namespace Kalendarzyk.Data.Repository
         }
         public void CreateEvent(IFormCollection form)
         {
-            var newevent = new EventModel(form, db.Locations.FirstOrDefault(x => x.Name == form["Location"]));
+            var lokacja = form["Location"].ToString();
+            var newevent = new EventModel(form, db.Locations.FirstOrDefault(x => x.Name == lokacja)) ;
             db.Events.Add(newevent);
             db.SaveChanges();
 
         }
         public void UpdateEvent(IFormCollection form)
         {
-            var myevent = db.Events.FirstOrDefault(x=> x.Id == int.Parse(form["id"]));
-            var locations = db.Locations.FirstOrDefault(x => x.Name == form["Location"]);
+            var lokacja = form["Location"].ToString();
+            var eventid = int.Parse(form["EventModel.Id"]);
+            var myevent = db.Events.FirstOrDefault(x=> x.Id == eventid);
+            var locations = db.Locations.FirstOrDefault(x => x.Name == lokacja);
             myevent.UpdateEvent(form, locations);
             db.Entry(myevent).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             db.SaveChanges();

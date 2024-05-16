@@ -14,20 +14,20 @@ namespace Kalendarzyk.Models
         public UserModel User { get; set; }
 
         public EventModel(IFormCollection form, LocationModel location) {
-            Id = int.Parse(form["Id"]);
-            Name = form["Name"];
-            Description = form["Description"];
-            StartTime = DateTime.Parse(form["StartTime"]);
-            EndTime = DateTime.Parse(form["EndTime"]);
+
+            Name = form["EventModel.Name"].ToString();
+            Description = form["EventModel.Description"].ToString();
+            StartTime = DateTime.Parse(form["EventModel.StartTime"].ToString());
+            EndTime = DateTime.Parse(form["EventModel.EndTime"].ToString());
             Location = location;
         }
         public void UpdateEvent(IFormCollection form, LocationModel location)
         {
-            Id = int.Parse(form["Id"]);
-            Name = form["Name"];
-            Description = form["Description"];
-            StartTime = DateTime.Parse(form["StartTime"]);
-            EndTime = DateTime.Parse(form["EndTime"]);
+
+            Name = form["EventModel.Name"].ToString();
+            Description = form["EventModel.Description"].ToString();
+            StartTime = DateTime.Parse(form["EventModel.StartTime"].ToString());
+            EndTime = DateTime.Parse(form["EventModel.EndTime"].ToString());
             Location = location;
         }
         public EventModel() { }
