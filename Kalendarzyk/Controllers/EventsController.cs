@@ -16,9 +16,11 @@ namespace Kalendarzyk.Controllers
     {
 
         private readonly ICalendarRepository _repo;
-        public EventsController(ICalendarRepository repo)
+        private readonly ApplicationDbContext _context;
+        public EventsController(ICalendarRepository repo, ApplicationDbContext context)
         {
             _repo = repo;
+            _context = context; 
         }
 
 
@@ -50,8 +52,9 @@ namespace Kalendarzyk.Controllers
 
         public IActionResult Create()
         {
-
-            return View(new EventViewModel(_repo.GetLocations()));
+            var user = _context.UserModel.FirstOrDefault(n => n.UserName == User.Identity.Name);
+            var userId = user.Id;
+            return View(new EventViewModel(_repo.UserLocations(userId)));
         }
 
 
@@ -87,7 +90,9 @@ namespace Kalendarzyk.Controllers
             {
                 return NotFound();
             }
-            var vm = new EventViewModel(eventModel, _repo.GetLocations());
+            var user = _context.UserModel.FirstOrDefault(n => n.UserName == User.Identity.Name);
+            var userId = user.Id;
+            var vm = new EventViewModel(eventModel, _repo.UserLocations(userId));
             return View(vm);
         }
 
@@ -106,8 +111,10 @@ namespace Kalendarzyk.Controllers
 
             catch (Exception ex)
             {
-                ViewData["Alert"] = "Napotakno error" + ex.Message;
-                var vm = new EventViewModel(_repo.GetEvent(id), _repo.GetLocations());
+                ViewData["Alert"] = "Napotkano błąd" + ex.Message;
+                var user = _context.UserModel.FirstOrDefault(n => n.UserName == User.Identity.Name);
+                var userId = user.Id;
+                var vm = new EventViewModel(_repo.GetEvent(id), _repo.UserLocations(userId));
                 return View(vm);
             }
             return RedirectToAction(nameof(Index));

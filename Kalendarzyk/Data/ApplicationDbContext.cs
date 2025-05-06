@@ -18,6 +18,21 @@ namespace Kalendarzyk.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<LocationModel>()
+                .HasOne(l => l.User)
+                    .WithMany(u => u.Locations)
+                        .HasForeignKey(l => l.UserId);
+
+            builder.Entity<EventModel>()
+                .HasOne(e => e.User)
+                    .WithMany(u => u.Events)
+                        .HasForeignKey(e => e.UserId);
+
+            builder.Entity<EventModel>()
+                .HasOne(e => e.Location)
+                    .WithMany(l => l.Events)
+                        .HasForeignKey(e => e.LocationId);
+
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -28,7 +28,8 @@ namespace Kalendarzyk.Controllers
         public IActionResult Index()
         {
             var user = _context.UserModel.FirstOrDefault(n => n.UserName == User.Identity.Name);
-            ViewData["res"] = JSONhelper.GetResourceJson(_repo.GetLocations());
+            var userId = user.Id;
+            ViewData["res"] = JSONhelper.GetResourceJson(_repo.UserLocations(userId));
             ViewData["eve"] = JSONhelper.GetEventsJson(_repo.GetEvents());
 
             return View();

@@ -17,6 +17,7 @@ builder.Services.AddDefaultIdentity<UserModel>(options => options.SignIn.Require
 builder.Services.AddScoped<ICalendarRepository,CalendarRepository>();
 builder.Services.AddControllersWithViews();
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

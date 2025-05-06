@@ -9,5 +9,8 @@ namespace Kalendarzyk.Models
         public string Name { get; set; }
         public ICollection<EventModel> Events { get; set; }
 
+        public string UserId { get; set; }
+        public UserModel User { get; set; }
+
     }
 }

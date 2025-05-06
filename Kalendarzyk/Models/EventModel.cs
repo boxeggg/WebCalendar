@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 
 namespace Kalendarzyk.Models
 {
@@ -11,7 +12,9 @@ namespace Kalendarzyk.Models
         public DateTime StartTime { get; set;}
         public DateTime EndTime { get; set; }
         public LocationModel Location { get; set; }
+        public int LocationId { get; set; }
         public UserModel User { get; set; }
+        public string UserId { get; set; }
 
         public EventModel(IFormCollection form, LocationModel location) {
 

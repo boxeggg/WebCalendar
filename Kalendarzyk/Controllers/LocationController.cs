@@ -14,10 +14,13 @@ namespace Kalendarzyk.Controllers
     public class LocationController : Controller
     {
 
+        private readonly ApplicationDbContext _context;
         private readonly ICalendarRepository _repo;
 
-        public LocationController(ICalendarRepository repo)
+
+        public LocationController(ICalendarRepository repo, ApplicationDbContext context)
         {
+            _context = context;
             _repo = repo;
         }
 
@@ -29,7 +32,9 @@ namespace Kalendarzyk.Controllers
             {
                 ViewData["Alert"] = TempData["Alert"];
             }
-            return View(_repo.GetLocations());
+            var user = _context.UserModel.FirstOrDefault(n => n.UserName == User.Identity.Name);
+            var userId = user.Id;
+            return View(_repo.UserLocations(userId));
         }
 
         // GET: Location/Details/5
