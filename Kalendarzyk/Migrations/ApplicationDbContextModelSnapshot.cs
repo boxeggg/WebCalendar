@@ -4,23 +4,20 @@ using Kalendarzyk.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Kalendarzyk.Data.Migrations
+namespace Kalendarzyk.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240515174432_added user-event relation")]
-    partial class addedusereventrelation
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -51,6 +48,7 @@ namespace Kalendarzyk.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -74,7 +72,13 @@ namespace Kalendarzyk.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Locations");
                 });
@@ -286,14 +290,27 @@ namespace Kalendarzyk.Data.Migrations
                     b.HasOne("Kalendarzyk.Models.LocationModel", "Location")
                         .WithMany("Events")
                         .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Kalendarzyk.Models.UserModel", "User")
                         .WithMany("Events")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Location");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Kalendarzyk.Models.LocationModel", b =>
+                {
+                    b.HasOne("Kalendarzyk.Models.UserModel", "User")
+                        .WithMany("Locations")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -357,6 +374,8 @@ namespace Kalendarzyk.Data.Migrations
             modelBuilder.Entity("Kalendarzyk.Models.UserModel", b =>
                 {
                     b.Navigation("Events");
+
+                    b.Navigation("Locations");
                 });
 #pragma warning restore 612, 618
         }

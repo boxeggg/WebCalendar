@@ -21,17 +21,17 @@ namespace Kalendarzyk.Data
             builder.Entity<LocationModel>()
                 .HasOne(l => l.User)
                     .WithMany(u => u.Locations)
-                        .HasForeignKey(l => l.UserId);
+                        .HasForeignKey(l => l.UserId).OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<EventModel>()
                 .HasOne(e => e.User)
                     .WithMany(u => u.Events)
-                        .HasForeignKey(e => e.UserId);
+                        .HasForeignKey(e => e.UserId).OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<EventModel>()
                 .HasOne(e => e.Location)
                     .WithMany(l => l.Events)
-                        .HasForeignKey(e => e.LocationId);
+                        .HasForeignKey(e => e.LocationId).OnDelete(DeleteBehavior.Restrict);
 
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

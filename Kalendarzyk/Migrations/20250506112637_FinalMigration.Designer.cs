@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Kalendarzyk.Data.Migrations
+namespace Kalendarzyk.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250506110215_UpdateRelations")]
-    partial class UpdateRelations
+    [Migration("20250506112637_FinalMigration")]
+    partial class FinalMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -293,7 +293,7 @@ namespace Kalendarzyk.Data.Migrations
                     b.HasOne("Kalendarzyk.Models.LocationModel", "Location")
                         .WithMany("Events")
                         .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Kalendarzyk.Models.UserModel", "User")
