@@ -6,68 +6,64 @@
 }
 
 <h1>Edit</h1>
-
-<h4>EventModel</h4>
 <hr />
+
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="EventModel.Id" />
+
+            <input asp-for="EventModel.Id" type="hidden" />
+            <input asp-for="EventModel.UserId" type="hidden" />
+
             <div class="form-group">
                 <label asp-for="EventModel.Name" class="control-label"></label>
                 <input asp-for="EventModel.Name" class="form-control" />
                 <span asp-validation-for="EventModel.Name" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="EventModel.Description" class="control-label"></label>
                 <input asp-for="EventModel.Description" class="form-control" />
                 <span asp-validation-for="EventModel.Description" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="EventModel.StartTime" class="control-label"></label>
-                <input asp-for="EventModel.StartTime" class="form-control" />
+                <input asp-for="EventModel.StartTime" type="datetime-local" class="form-control" />
                 <span asp-validation-for="EventModel.StartTime" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="EventModel.EndTime" class="control-label"></label>
-                <input asp-for="EventModel.EndTime" class="form-control" />
+                <input asp-for="EventModel.EndTime" type="datetime-local" class="form-control" />
                 <span asp-validation-for="EventModel.EndTime" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label>Location</label>
-                @Html.DropDownList("Location", Model.Location, "Choose localization", new { @class = "form-control" })
+                <label asp-for="EventModel.LocationId" class="control-label">Lokalizacja</label>
+                <select asp-for="EventModel.LocationId"
+                        asp-items="Model.Location"
+                        class="form-control">
+                    <option value="">Wybierz lokalizację</option>
+                </select>
+                <span asp-validation-for="EventModel.LocationId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <button type="submit" class="btn btn-primary">Save</button>
             </div>
         </form>
     </div>
 </div>
-
-    <script>
-        function SetSelectedLocation(Location) {
-            var locations = document.getElementById('Location'), loc, i;
-
-            for (i = 0; i < locations.length; i++) {
-                loc = locations[i];
-                if (loc.innerText === Location) {
-                    loc.selected = "true";
-                }
-            }
-        }
-
-    var eventlocation = "@Html.Raw(Model.Name)";
-
-    document.addEventListener('DOMContentLoaded', function () {
-        SetSelectedLocation(eventlocation);
-    });
-</script>
 
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

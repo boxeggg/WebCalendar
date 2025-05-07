@@ -30,7 +30,7 @@ namespace Kalendarzyk.Controllers
             var user = _context.UserModel.FirstOrDefault(n => n.UserName == User.Identity.Name);
             var userId = user.Id;
             ViewData["res"] = JSONhelper.GetResourceJson(_repo.UserLocations(userId));
-            ViewData["eve"] = JSONhelper.GetEventsJson(_repo.GetEvents());
+            ViewData["eve"] = JSONhelper.GetEventsJson(_repo.GetMyEvents(userId));
 
             return View();
         }

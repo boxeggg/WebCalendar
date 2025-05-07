@@ -26,11 +26,13 @@ namespace Kalendarzyk.Controllers
 
         public IActionResult Index()
         {
+            var user = _context.UserModel.FirstOrDefault(n => n.UserName == User.Identity.Name);
+
             if (TempData["Alert"] != null)
             {
                 ViewData["Alert"] = TempData["Alert"];
             }
-            return View(_repo.GetEvents());
+            return View(_repo.GetMyEvents(user.Id));
         }
 
 
@@ -52,29 +54,53 @@ namespace Kalendarzyk.Controllers
 
         public IActionResult Create()
         {
-            var user = _context.UserModel.FirstOrDefault(n => n.UserName == User.Identity.Name);
-            var userId = user.Id;
-            return View(new EventViewModel(_repo.UserLocations(userId)));
+            var user = _context.UserModel.FirstOrDefault(u => u.UserName == User.Identity.Name);
+            var model = new EventViewModel
+            {
+                EventModel = new EventModel
+                {
+                    StartTime = DateTime.Now,
+                    EndTime = DateTime.Now.AddHours(1)
+                },
+                Location = _repo.UserLocations(user.Id).Select(l => new SelectListItem
+                {
+                    Value = l.Id.ToString(),
+                    Text = l.Name
+                }).ToList()
+            };
+            return View(model);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(EventViewModel vm, IFormCollection form)
+        public IActionResult Create(EventViewModel vm)
         {
+            var user = _context.UserModel.FirstOrDefault(u => u.UserName == User.Identity.Name);
+            if (user == null) return Unauthorized();
 
-            try
+            vm.Location = _repo.UserLocations(user.Id).Select(l => new SelectListItem
             {
-                _repo.CreateEvent(form);
-                TempData["Alert"] = "Pomyślnie utworzono nowe wydarzenie dla: " + form["EventModel.Name"];
+                Value = l.Id.ToString(),
+                Text = l.Name
+            }).ToList();
+            vm.EventModel.UserId = user.Id;
+            vm.EventModel.User = user;
+            ModelState.Clear();
+            TryValidateModel(vm.EventModel);
+
+            if (ModelState.IsValid)
+            {
+
+                _context.Events.Add(vm.EventModel);
+                _context.SaveChanges();
                 return RedirectToAction("Index");
             }
-            catch (Exception ex)
-            {
-                ViewData["Alert"] = "Napotkano problem: " + ex.Message;
-                return View(vm);
 
-            }
+
+
+
+            return View(vm);
         }
 
 
@@ -95,32 +121,52 @@ namespace Kalendarzyk.Controllers
             var vm = new EventViewModel(eventModel, _repo.UserLocations(userId));
             return View(vm);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, IFormCollection form)
+        public IActionResult Edit(int id, EventViewModel vm)
         {
+            // 0. Pobierz aktualnie zalogowanego użytkownika
+            var user = _context.UserModel
+                               .FirstOrDefault(u => u.UserName == User.Identity.Name);
+            if (user == null)
+                return Unauthorized();
 
+            // 1. Upewnij się, że path id i model.Id się zgadzają
+            if (id != vm.EventModel.Id)
+                return BadRequest();
 
-            try
+            // 2. Sprawdź, czy ten event rzeczywiście należy do aktualnego usera
+            if (!_context.Events.Any(e => e.Id == id && e.UserId == user.Id))
+                return Forbid();
+
+            // 3. Przygotuj dropdown z lokalizacjami użytkownika
+            vm.Location = _repo.UserLocations(user.Id)
+                              .Select(l => new SelectListItem
+                              {
+                                  Value = l.Id.ToString(),
+                                  Text = l.Name
+                              })
+                              .ToList();
+
+            // 4. Nadpisz UserId z kodu, żeby nikt nie podmienił w formularzu
+            vm.EventModel.UserId = user.Id;
+
+            // 5. Wyczyść stary ModelState i ręcznie zwaliduj EventModel
+            ModelState.Clear();
+            TryValidateModel(vm.EventModel, prefix: "EventModel");
+
+            // 6. Jeśli coś nie tak – pokaż formularz z błędami
+            if (!ModelState.IsValid)
             {
-                _repo.UpdateEvent(form);
-                TempData["Alert"] = "Udało ci się zmodyfikować nazwę dla: " + form["EventModel.name"];
-                RedirectToAction(nameof(Index));
-            }
-
-            catch (Exception ex)
-            {
-                ViewData["Alert"] = "Napotkano błąd" + ex.Message;
-                var user = _context.UserModel.FirstOrDefault(n => n.UserName == User.Identity.Name);
-                var userId = user.Id;
-                var vm = new EventViewModel(_repo.GetEvent(id), _repo.UserLocations(userId));
                 return View(vm);
             }
-            return RedirectToAction(nameof(Index));
+
+            // 7. Wszystko OK – aktualizuj i zapisz
+            _context.Events.Update(vm.EventModel);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
 
-    
 
         // GET: Events/Delete/5
         public IActionResult Delete(int? id)

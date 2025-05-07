@@ -9,19 +9,23 @@ namespace Kalendarzyk.Serializer
         {
             var myeventlist = new List<Event>();
 
-            foreach (var model in events)
-            {
-                var myevent = new Event()
+                foreach (var model in events)
                 {
-                    id = model.Id,
-                    start = model.StartTime, end = model.EndTime,
-                    resourceId = model.Location.Id,
-                    description = model.Description,
-                    title = model.Name
-            };
-                myeventlist.Add(myevent);  
-            }
+
+                    var myevent = new Event()
+                    {
+                        id = model.Id,
+                        start = model.StartTime,
+                        end = model.EndTime,
+                        resourceId = model.Location.Id,
+                        description = model.Description,
+                        title = model.Name
+                    };
+                    myeventlist.Add(myevent);
+                }
             return System.Text.Json.JsonSerializer.Serialize(myeventlist);
+
+           
         }
         public static string GetResourceJson(List<LocationModel> locations)
         {

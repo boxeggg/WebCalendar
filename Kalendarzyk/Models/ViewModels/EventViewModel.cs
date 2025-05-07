@@ -1,32 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Kalendarzyk.Models.ViewModels
 {
     public class EventViewModel
     {
         public EventModel EventModel { get; set; }
-        public List<SelectListItem> Location { get; set; } = new List<SelectListItem>();
-        public string Name { get; set; }
-        public EventViewModel(EventModel myevent, List<LocationModel> locations)
-        {
-            EventModel = myevent;
-            Name = myevent.Location.Name;
-            foreach (var loc in locations) {
-                Location.Add(new SelectListItem() { Text = loc.Name });
+        public List<SelectListItem>? Location { get; set; }
 
-            }
-        }
-        public EventViewModel(List<LocationModel> locations)
+        public IEnumerable<LocationModel>? Locations; 
+
+
+
+        public EventViewModel() { }
+
+        public EventViewModel(EventModel model, IEnumerable<LocationModel> locations)
         {
-            foreach (var loc in locations)
+            EventModel = model;
+
+            Location = locations.Select(l => new SelectListItem
             {
-                Location.Add(new SelectListItem() { Text = loc.Name });
-
-            }
-        }
-        public EventViewModel()
-        {
-
+                Value = l.Id.ToString(),
+                Text = l.Name
+            }).ToList();
         }
     }
 }

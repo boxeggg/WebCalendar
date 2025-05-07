@@ -67,17 +67,33 @@ namespace Kalendarzyk.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] LocationModel locationModel)
         {
-                try
+            try
+            {
+                    var user = _context.UserModel.FirstOrDefault(u => u.UserName == User.Identity.Name);
+                    if (user == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    locationModel.UserId = user.Id;
+
+                ModelState.Clear();
+                TryValidateModel(locationModel);
+
+                if (ModelState.IsValid)
                 {
                     _repo.CreateLocation(locationModel);
                     TempData["Alert"] = "Udało ci się dodać lokacje";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Index"); 
                 }
-                catch (Exception ex)
-                {
-                    ViewData["Alert"] = "Wystąpił bład: " + ex.Message;
-                    return View(locationModel);
-                }
+
+                return View(locationModel);
+            }
+            catch (Exception ex)
+            {
+                ViewData["Alert"] = "Wystąpił bład: " + ex.Message;
+                return View(locationModel);
+            }
             }
         public IActionResult Delete(int? id)
         {
